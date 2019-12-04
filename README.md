@@ -2,7 +2,7 @@
 
 ## Make
 ```sh
-gcc -o birdsh birdsh.c
+gcc -static -o birdsh birdsh.c
 ```
 
 ## Built-in Commands:
