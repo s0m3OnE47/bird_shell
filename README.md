@@ -5,6 +5,11 @@
 gcc -o birdsh birdsh.c
 ```
 
+## Run
+```sh
+./birdsh
+```
+
 ## Built-in Commands:
 cd
 help
