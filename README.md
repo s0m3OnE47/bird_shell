@@ -5,16 +5,20 @@
 gcc -static -o birdsh birdsh.c
 ```
 
-## Built-in Commands:
-cd
-help
-exit
-ls
-echo
-pwd
-clear
-setenv
-env
-rm
-./process
+## Run
+```sh
+./birdsh
+```
 
+## Built-in Commands:
+01. cd
+02. help
+03. exit
+04. ls
+05. echo
+06. pwd
+07. clear
+08. setenv
+09. env
+10. rm
+11. ./process
