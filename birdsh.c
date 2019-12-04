@@ -35,9 +35,9 @@ char *builtin_str[] = {
 	"pwd",		// <-
 	"clear",	// <-
 	"setenv",	// <-
-	"env",	// <-
+	"env",		// <-
 	"rm",		// <-
-	"./process"
+	"./process" // <-
 };
 
 int (*builtin_func[]) (char **) = {
