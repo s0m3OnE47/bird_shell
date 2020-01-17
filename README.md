@@ -22,3 +22,6 @@ gcc -static -o birdsh birdsh.c
 09. env
 10. rm
 11. ./process
+
+## To Do
+01. Find
