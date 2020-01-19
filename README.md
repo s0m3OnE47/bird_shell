@@ -25,3 +25,4 @@ gcc -static -o birdsh birdsh.c
 
 ## To Do
 01. Find
+02. 
