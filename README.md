@@ -24,5 +24,3 @@ gcc -static -o birdsh birdsh.c
 11. ./process
 
 ## To Do
-01. Find
-02. 
