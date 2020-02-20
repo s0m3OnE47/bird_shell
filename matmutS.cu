@@ -1,12 +1,13 @@
-# include <stdio.h>
-# include<stdlib.h>
-# include<assert.h>
-# define N 100
+#include<stdio.h>
+#include<stdlib.h>
+#include<assert.h>
+#include<cuda_runtime.h>
+
 # define LOOP 5
 # define BLOCK_SIZE 16
 # define SHARED_MEM (BLOCK_SIZE*BLOCK_SIZE)
 
-void test_results(int A[N][N], int B[N][N],int C[N][N]){
+void test_results(int A[N][N], int B[N][N],int C[N][N],int N){
   int temp;
   for(int i=0;i<N;++i){
     for(int j=0;j<N;++j){
@@ -64,13 +65,24 @@ __global__ void MatMul(int *A, int *B,int*C, int MatDim) {
 
 int A[N][N], B[N][N],C[N][N];
 
-int main(){
-  int *d_A, *d_B, *d_C;
+int main(int argc, char **argv ){
+  int *A_gpu, *B_gpu, *d_C;
+
+  if(argc != 2){
+  	printf("Invalid Arguments\n");
+  	return -1;
+  }
+
+  N = atoi(argv[1]);
+
   int size = N*N*sizeof(int);
+
   dim3 threads_per_block(BLOCK_SIZE,BLOCK_SIZE);
   dim3 blocks_in_grid((N+BLOCK_SIZE-1)/BLOCK_SIZE,(N+BLOCK_SIZE-1)/BLOCK_SIZE);
   cudaEvent_t start, stop;
+  
   float time[LOOP];
+  
   for(int k=0;k<LOOP;++k){
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
@@ -80,17 +92,17 @@ int main(){
     for(int i=0;i<N;++i)
     for(int j=0;j<N;++j)
       B[i][j] = rand()%N;
-    cudaMalloc((void**)&d_A,size);
-    cudaMalloc((void**)&d_B,size);
+    cudaMalloc((void**)&A_gpu,size);
+    cudaMalloc((void**)&B_gpu,size);
     cudaMalloc((void**)&d_C,size);
     cudaEventRecord( start, 0 );
 
     cudaEventRecord( start, 0 );
 
-    cudaMemcpy(d_A,A,size,cudaMemcpyHostToDevice);
-    cudaMemcpy(d_B,B,size,cudaMemcpyHostToDevice);
+    cudaMemcpy(A_gpu,A,size,cudaMemcpyHostToDevice);
+    cudaMemcpy(B_gpu,B,size,cudaMemcpyHostToDevice);
 
-    MatMul<<<blocks_in_grid,threads_per_block>>>(d_A,d_B,d_C,N);
+    MatMul<<<blocks_in_grid,threads_per_block>>>(A_gpu,B_gpu,d_C,N);
 
     cudaMemcpy(C,d_C,size,cudaMemcpyDeviceToHost);
 
@@ -101,8 +113,8 @@ int main(){
 
     cudaEventDestroy( start );
     cudaEventDestroy( stop );
-    cudaFree(d_A);
-    cudaFree(d_B);
+    cudaFree(A_gpu);
+    cudaFree(B_gpu);
     cudaFree(d_C);
   }
   /*for(int i=0;i<N;++i){
@@ -123,7 +135,7 @@ int main(){
     printf("\n");
   }*/
 
-test_results(A,B,C);
+test_results(A,B,C,N);
 printf("Results verified\n");
 
 float average =0;
